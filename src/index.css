@@ -134,26 +134,71 @@ code {
 .main-wrapper {
   display: flex;
   justify-content: space-around;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 .main-item {
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
   padding: 1rem;
   color: white;
 }
 .main-item1 h1 {
   font-size: 2rem;
   font-family: "Rajdhani", sans-serif;
-  margin-left: 1rem;
 }
 
 .main-item__sub {
   display: flex;
-  border: 1px solid red;
+  /* border: 1px solid red; */
   justify-content: space-around;
 }
 
 .main-item____sub {
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
   padding: 1rem;
+}
+
+.weather_icon {
+  /* border: 1px solid red; */
+}
+
+.main-item____sub h3 {
+  font-size: 2rem;
+  font-family: "Rajdhani", sans-serif;
+}
+.main-item____sub h2 {
+  font-size: 1rem;
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 300;
+}
+
+.bottom {
+  color: white;
+  text-align: center;
+  margin-bottom: 1rem;
+  margin-top: 5rem;
+}
+
+.bottom h1 {
+  font-size: 2rem;
+  font-family: "Rajdhani", sans-serif;
+  color: white;
+}
+
+/* slider  */
+
+.slide-wrapper {
+  display: flex;
+  justify-content: space-around;
+}
+.slide-item {
+  /* border: 1px solid red; */
+  /* padding: 1rem; */
+  /* height: 2rem; */
+  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.253);
+
+  text-align: center;
+  padding: 1rem;
+}
+.slide-item div {
+  padding: 0.2rem;
 }

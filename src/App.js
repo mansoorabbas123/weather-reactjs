@@ -13,10 +13,14 @@ import nightSkyImg from "./assets/images/nightSky.jpg";
 import rainImg from "./assets/images/rain.jpeg";
 import snowImg from "./assets/images/snow.jpeg";
 import sunnyImg from "./assets/images/sunny.jpg";
+import CarouselComp from "./components/CarouselComp";
+
+const weatherConditions = ["cloudy", "haze", "rain", "snow", "sunny", "clear"];
 
 const App = () => {
   const [address, setAddress] = useState("");
-  const [weather, setWeather] = useState(null);
+  const [currWeather, setCurrWeather] = useState(null);
+  const [forecast, setForecast] = useState([]);
   const [city, setCity] = useState(null);
   const [date, setDate] = useState(null);
   const [cordinates, setCordinates] = useState({
@@ -24,21 +28,6 @@ const App = () => {
     lng: null,
   });
   const [bgImg, setBgImg] = useState(bgImage);
-
-  const weatherConditions = [
-    "Clear",
-    "Sunny",
-    "Partially cloudy",
-    "Cloudy",
-    "scattered clouds",
-    "Overcast",
-    "Rain",
-    "Thundersnows",
-    "Tornadoes",
-    "Fog",
-    "Hurricanes",
-    "Sandstorms",
-  ];
 
   const handleSubmit = () => {
     setCity(address);
@@ -53,6 +42,7 @@ const App = () => {
       const { data } = await axios(
         `https://api.openweathermap.org/data/2.5/onecall?lat=${cordinates.lat}&lon=${cordinates.lng}&units=metric&appid=113a87400b5261ba9851509613687a2e`
       );
+
       // formate date
       var options = {
         weekday: "long",
@@ -66,9 +56,14 @@ const App = () => {
       setDate(d);
 
       // set weather data came from api into state
-      setWeather(data);
-
+      setCurrWeather(data);
+      console.log(
+        "current weather response ====",
+        data.current.weather[0].description
+      );
+      setForecast(data.daily);
       // handling background images dynamically for each weather condition
+
       if (data.current.weather[0].main === "Clear") {
         setBgImg(sunnyImg);
       } else if (data.current.weather[0].main === "Clouds") {
@@ -85,16 +80,14 @@ const App = () => {
     setCordinates(latLng);
     setAddress(value);
   };
-  if (weather) {
-    console.log(weather.current.weather[0]);
-  }
-  // console.log(address);
 
   const styles = {
-    backgroundImage: `url(${bgImg})`,
+    // position: "fixed",
+    backgroundImage: `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ),url(${bgImg})`,
     backgroundSize: "cover",
+    backgroundAttachment: "fixed",
     backgroundRepeat: "no-repeat",
-    height: "100vh",
+    // height: "100vh",
     width: "100%",
     marginTop: "none",
     border: "1px solid black",
@@ -161,26 +154,27 @@ const App = () => {
               <h1>{city && city}</h1>
               <p>{date}</p>
               <div className="main-item__sub">
-                <div className="main-item____sub main-item____sub1">
-                  {weather
-                    ? weatherConditions.map((el) => {
-                        if (
-                          weather.current.weather[0].description
-                            .toLowerCase()
-                            .match(/`${el}`/i) !== null
-                        ) {
-                          return (
-                            <i className={`wi wi-day-${el.toLowerCase()}`}></i>
-                          );
-                        }
-                      })
-                    : ""}
+                {/* <div className="main-item____sub main-item____sub1">
+                  <i className="wi wi-owm-f00d weather_icon"></i>
+                </div> */}
+                <div className="main-item____sub main-item____sub2">
+                  <h3>
+                    {" "}
+                    {currWeather && Math.round(currWeather.current.temp)}
+                    <span>&#8451;</span>{" "}
+                  </h3>
+                  <h2>{currWeather?.current.weather[0].description}</h2>
                 </div>
-                <div className="main-item____sub main-item____sub2">14.0</div>
               </div>
             </div>
             <div className="main-item main-item2">item two</div>
           </div>
+        </div>
+        <div className="bottom">
+          <h1>7 Days Forecast</h1>
+          {forecast && (
+            <CarouselComp className="slide-wrapper" forecast={forecast} />
+          )}
         </div>
       </div>
     </>
