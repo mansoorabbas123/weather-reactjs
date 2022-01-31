@@ -64,20 +64,17 @@ header {
 .search button {
   background-color: #000;
   color: white;
-  transition: all 1s ease;
   /* height: 40px;
   padding: 5px; */
-  margin-left: 13px;
+  margin-left: 20px;
   position: absolute;
   left: 12rem;
 }
 .search button:hover {
   cursor: pointer;
-  transform: translateY(-3px);
 }
 .search button:active {
   cursor: pointer;
-  transform: translateY(5px);
 }
 .search input,
 .search button {
@@ -224,11 +221,11 @@ header {
   /* height: 2rem; */
   box-shadow: 2px 0 5px 1px rgba(0, 0, 0, 0.253);
   text-align: center;
-  padding: 1rem;
+  padding: 5rem;
   margin-bottom: 5rem;
 }
 .slide-item div {
-  padding: 0.2rem;
+  padding: 1rem;
 }
 
 .main-item2 {

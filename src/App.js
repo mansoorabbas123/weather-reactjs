@@ -33,8 +33,10 @@ const App = () => {
 
   // when someone click on search button then this functin can be called
   const handleSubmit = () => {
+    console.log(cordinates);
     setLoader(true);
     setCity(address);
+
     if (address) {
       getWeatherData();
     }
@@ -47,7 +49,10 @@ const App = () => {
       const { data } = await axios(
         `https://api.openweathermap.org/data/2.5/onecall?lat=${cordinates.lat}&lon=${cordinates.lng}&units=metric&appid=113a87400b5261ba9851509613687a2e`
       );
-
+      setCordinates({
+        lat: null,
+        lng: null,
+      });
       // formate date
       var options = {
         weekday: "long",
@@ -62,9 +67,15 @@ const App = () => {
 
       // set weather data came from api into state
       setLoader(false);
-      setCurrWeather(data);
-      // console.log("current weather response ====", data);
-      setForecast(data.daily);
+      if (cordinates.lat) {
+        setCurrWeather(data);
+        setForecast(data.daily);
+      } else {
+        setCurrWeather(null);
+        setForecast(null);
+      }
+
+      console.log("current weather response ====", data.timezone);
 
       // handling background images dynamically for each weather condition
       const currConditon = data.current.weather[0].description;
@@ -86,12 +97,14 @@ const App = () => {
     } catch (error) {
       setLoader(false);
       console.log(error);
+      setCurrWeather(null);
     }
   };
-  console.log(currWeather);
+  // console.log(currWeather);
   // getting input data from input field when use select any suggestion item
   const handleSelect = async (value) => {
     const result = await geocodeByAddress(value);
+    console.log(result);
     const latLng = await getLatLng(result[0]);
     setCordinates(latLng);
     setAddress(value);
@@ -131,8 +144,6 @@ const App = () => {
   };
 
   const getWeatherIcons = (iconId) => {
-    console.log(iconId);
-
     switch (iconId) {
       case iconId == "11d":
         return "wi wi-thunderstorm";
