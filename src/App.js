@@ -29,11 +29,12 @@ const App = () => {
   });
   const [loader, setLoader] = useState(false);
   let [bgImg, setBgImg] = useState(bgImage);
-  const [weatherIcon, setWeatherIcon] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   // when someone click on search button then this functin can be called
   const handleSubmit = () => {
     console.log(cordinates);
+    setErrorMessage(null);
     setLoader(true);
     setCity(address);
 
@@ -73,6 +74,7 @@ const App = () => {
       } else {
         setCurrWeather(null);
         setForecast(null);
+        setErrorMessage("No Data");
       }
 
       console.log("current weather response ====", data.timezone);
@@ -96,8 +98,9 @@ const App = () => {
       }
     } catch (error) {
       setLoader(false);
-      console.log(error);
       setCurrWeather(null);
+      setErrorMessage("No Data");
+      console.log(error);
     }
   };
   // console.log(currWeather);
@@ -238,6 +241,8 @@ const App = () => {
         <div className="loader">
           <Grid color="#00BFFF" height={80} width={80} />
         </div>
+      ) : errorMessage ? (
+        <div className="error-message">{errorMessage}</div>
       ) : (
         <div style={{ display: `${currWeather ? "block" : "none"}` }}>
           <div className="main">
