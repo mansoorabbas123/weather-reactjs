@@ -21,6 +21,7 @@ const App = () => {
   const [address, setAddress] = useState("");
   const [currWeather, setCurrWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
+  const [cityFromWeather, setCityFromWeather] = useState("");
   const [city, setCity] = useState(null);
   const [date, setDate] = useState(null);
   const [loader, setLoader] = useState(false);
@@ -29,20 +30,26 @@ const App = () => {
 
   // when someone click on search button then this functin can be called
   const handleSubmit = () => {
-    setErrorMessage(null);
-    setLoader(true);
-    if (address) {
+    if (city) {
+      setCityFromWeather(city);
+      setErrorMessage(null);
+      setLoader(true);
       getWeatherData();
+    } else {
+      setErrorMessage("No Data");
     }
   };
 
   // Getting weather data from api
   const getWeatherData = async () => {
     try {
+      console.log(city);
       // get weather data from openweather api
       const res = await axios(
         `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a19358ea187a8bfc9c5524cc4489a585`
       );
+      console.log(res);
+      setCity("");
       let { coord } = res.data;
       console.log(coord);
       const res2 = await axios(
@@ -66,7 +73,7 @@ const App = () => {
       setCurrWeather(res2.data);
       setForecast(res2.data.daily);
 
-      console.log("current weather response ====", res2.data.timezone);
+      console.log("current weather response ====", res2.data);
 
       // handling background images dynamically for each weather condition
       const currConditon = res2.data.current.weather[0].description;
@@ -97,10 +104,9 @@ const App = () => {
   const handleSelect = async (value) => {
     const result = await geocodeByAddress(value);
     const cityName = result[0].address_components[0].short_name;
-
+    console.log(cityName);
     // const latLng = await getLatLng(result[0]);
 
-    setAddress(value);
     setCity(cityName);
   };
 
@@ -149,7 +155,7 @@ const App = () => {
         return "wi wi-snow";
       case iconId == "50d":
         return "wi wi-smoke";
-      case iconId == "01d" || iconId == "01n":
+      case iconId == "01d" || iconId == "01n".toString():
         return "wi wi-day-sunny";
       case iconId == "02d" ||
         iconId === "02n" ||
@@ -239,7 +245,7 @@ const App = () => {
           <div className="main">
             <div className="main-wrapper">
               <div className="main-item main-item1">
-                <h1>{city && city}</h1>
+                <h1>{cityFromWeather && cityFromWeather}</h1>
                 <p>{date}</p>
                 <div className="main-item__sub">
                   {/* data.current.weather[0].id */}
