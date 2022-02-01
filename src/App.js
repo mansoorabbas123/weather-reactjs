@@ -46,7 +46,7 @@ const App = () => {
       console.log(city);
       // get weather data from openweather api
       const res = await axios(
-        `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a19358ea187a8bfc9c5524cc4489a585`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a19358ea187a8bfc9c5524cc4489a585`
       );
       console.log(res);
       setCity("");
