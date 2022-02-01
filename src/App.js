@@ -23,21 +23,14 @@ const App = () => {
   const [forecast, setForecast] = useState([]);
   const [city, setCity] = useState(null);
   const [date, setDate] = useState(null);
-  const [cordinates, setCordinates] = useState({
-    lat: null,
-    lng: null,
-  });
   const [loader, setLoader] = useState(false);
   let [bgImg, setBgImg] = useState(bgImage);
   const [errorMessage, setErrorMessage] = useState(null);
 
   // when someone click on search button then this functin can be called
   const handleSubmit = () => {
-    console.log(cordinates);
     setErrorMessage(null);
     setLoader(true);
-    setCity(address);
-
     if (address) {
       getWeatherData();
     }
@@ -47,13 +40,15 @@ const App = () => {
   const getWeatherData = async () => {
     try {
       // get weather data from openweather api
-      const { data } = await axios(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${cordinates.lat}&lon=${cordinates.lng}&units=metric&appid=113a87400b5261ba9851509613687a2e`
+      const res = await axios(
+        `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a19358ea187a8bfc9c5524cc4489a585`
       );
-      setCordinates({
-        lat: null,
-        lng: null,
-      });
+      let { coord } = res.data;
+      console.log(coord);
+      const res2 = await axios(
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&units=metric&appid=113a87400b5261ba9851509613687a2e`
+      );
+
       // formate date
       var options = {
         weekday: "long",
@@ -61,26 +56,20 @@ const App = () => {
         month: "long",
         day: "numeric",
       };
-      const dt = data.current.dt;
+      const dt = res2.data.current.dt;
       const timeStamp = new Date(dt * 1000);
       const d = timeStamp.toLocaleDateString("en-US", options);
       setDate(d);
 
       // set weather data came from api into state
       setLoader(false);
-      if (cordinates.lat) {
-        setCurrWeather(data);
-        setForecast(data.daily);
-      } else {
-        setCurrWeather(null);
-        setForecast(null);
-        setErrorMessage("No Data");
-      }
+      setCurrWeather(res2.data);
+      setForecast(res2.data.daily);
 
-      console.log("current weather response ====", data.timezone);
+      console.log("current weather response ====", res2.data.timezone);
 
       // handling background images dynamically for each weather condition
-      const currConditon = data.current.weather[0].description;
+      const currConditon = res2.data.current.weather[0].description;
       if (currConditon.toLowerCase().includes("clear")) {
         setBgImg(sunny);
       } else if (currConditon.toLowerCase().includes("clouds")) {
@@ -107,10 +96,12 @@ const App = () => {
   // getting input data from input field when use select any suggestion item
   const handleSelect = async (value) => {
     const result = await geocodeByAddress(value);
-    console.log(result);
-    const latLng = await getLatLng(result[0]);
-    setCordinates(latLng);
+    const cityName = result[0].address_components[0].short_name;
+
+    // const latLng = await getLatLng(result[0]);
+
     setAddress(value);
+    setCity(cityName);
   };
 
   // format time
