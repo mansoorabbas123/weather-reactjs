@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid } from "react-loader-spinner";
 import moment from "moment";
 import PlacesAutocomplete, {
@@ -18,6 +18,7 @@ import windmill from "./assets/images/windmill.gif";
 
 const App = () => {
   // state variables
+  const [isLoading, setIsLoading] = useState(true);
   const [address, setAddress] = useState("");
   const [currWeather, setCurrWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
@@ -180,133 +181,152 @@ const App = () => {
     border: "1px solid black",
     minHeight: "100vh",
   };
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
 
   return (
     <div style={container}>
-      <header>
-        <div className="logo">
-          <h1>Mosam</h1>
-        </div>
-        <div className="search">
-          <PlacesAutocomplete
-            value={address}
-            onChange={setAddress}
-            onSelect={handleSelect}
-          >
-            {({
-              getInputProps,
-              suggestions,
-              getSuggestionItemProps,
-              loading,
-            }) => (
-              <>
-                <div className="input-item">
-                  <input
-                    {...getInputProps({ placeholder: "Type City" })}
-                    required
-                  />
-                  <div>
-                    {
-                      // loading ? (
-                      //   <div>Loading...</div>
-                      // ) :
-                      suggestions.map((suggestion, idx) => {
-                        const style = {
-                          backgroundColor: suggestion.active ? "#999" : "#fff",
-                        };
-                        return (
-                          <div
-                            className="suggestion"
-                            key={idx}
-                            {...getSuggestionItemProps(suggestion, { style })}
-                          >
-                            {" "}
-                            {suggestion.description}{" "}
-                          </div>
-                        );
-                      })
-                    }
-                  </div>
-                </div>
-                <button onClick={handleSubmit}>Search</button>
-              </>
-            )}
-          </PlacesAutocomplete>
-        </div>
-      </header>
-      {loader ? (
+      {isLoading ? (
         <div className="loader">
           <Grid color="#00BFFF" height={80} width={80} />
         </div>
-      ) : errorMessage ? (
-        <div className="error-message">{errorMessage}</div>
       ) : (
-        <div style={{ display: `${currWeather ? "block" : "none"}` }}>
-          <div className="main">
-            <div className="main-wrapper">
-              <div className="main-item main-item1">
-                <h1>{cityFromWeather && cityFromWeather}</h1>
-                <p>{date}</p>
-                <div className="main-item__sub">
-                  {/* data.current.weather[0].id */}
-                  <div className="main-item____sub main-item____sub1">
-                    <i
-                      className={
-                        currWeather &&
-                        getWeatherIcons(currWeather.current.weather[0].icon)
-                      }
-                      style={{ fontSize: "30px", marginTop: "0.5rem" }}
-                    ></i>
+        <div>
+          <header>
+            <div className="logo">
+              <h1>Mosam</h1>
+            </div>
+            <div className="search">
+              <PlacesAutocomplete
+                value={address}
+                onChange={setAddress}
+                onSelect={handleSelect}
+              >
+                {({
+                  getInputProps,
+                  suggestions,
+                  getSuggestionItemProps,
+                  loading,
+                }) => (
+                  <>
+                    <div className="input-item">
+                      <input
+                        {...getInputProps({ placeholder: "Type City" })}
+                        required
+                      />
+                      <div>
+                        {
+                          // loading ? (
+                          //   <div>Loading...</div>
+                          // ) :
+                          suggestions.map((suggestion, idx) => {
+                            const style = {
+                              backgroundColor: suggestion.active
+                                ? "#999"
+                                : "#fff",
+                            };
+                            return (
+                              <div
+                                className="suggestion"
+                                key={idx}
+                                {...getSuggestionItemProps(suggestion, {
+                                  style,
+                                })}
+                              >
+                                {" "}
+                                {suggestion.description}{" "}
+                              </div>
+                            );
+                          })
+                        }
+                      </div>
+                    </div>
+                    <button onClick={handleSubmit}>Search</button>
+                  </>
+                )}
+              </PlacesAutocomplete>
+            </div>
+          </header>
+          {loader ? (
+            <div className="loader">
+              <Grid color="#00BFFF" height={80} width={80} />
+            </div>
+          ) : errorMessage ? (
+            <div className="error-message">{errorMessage}</div>
+          ) : (
+            <div style={{ display: `${currWeather ? "block" : "none"}` }}>
+              <div className="main">
+                <div className="main-wrapper">
+                  <div className="main-item main-item1">
+                    <h1>{cityFromWeather && cityFromWeather}</h1>
+                    <p>{date}</p>
+                    <div className="main-item__sub">
+                      {/* data.current.weather[0].id */}
+                      <div className="main-item____sub main-item____sub1">
+                        <i
+                          className={
+                            currWeather &&
+                            getWeatherIcons(currWeather.current.weather[0].icon)
+                          }
+                          style={{ fontSize: "30px", marginTop: "0.5rem" }}
+                        ></i>
+                      </div>
+                      <div className="main-item____sub main-item____sub2">
+                        <h3>
+                          {currWeather && Math.round(currWeather.current.temp)}
+                          <span>&#8451;</span>{" "}
+                        </h3>
+                        <h2>
+                          {currWeather &&
+                            toCapitalizCase(
+                              currWeather.current.weather[0].description
+                            )}
+                        </h2>
+                      </div>
+                    </div>
                   </div>
-                  <div className="main-item____sub main-item____sub2">
-                    <h3>
-                      {currWeather && Math.round(currWeather.current.temp)}
-                      <span>&#8451;</span>{" "}
-                    </h3>
-                    <h2>
-                      {currWeather &&
-                        toCapitalizCase(
-                          currWeather.current.weather[0].description
-                        )}
-                    </h2>
+                  <div className="main-item main-item2">
+                    <div>
+                      <h3>{currWeather && currWeather.current.humidity}%</h3>
+                      <h3>Humidity</h3>
+                      <br />
+                      <h3>
+                        {currWeather && currWeather.current.wind_speed} mph
+                      </h3>
+                      <div
+                        style={{
+                          backgroundColor: "#fff",
+                          borderRadius: ".7rem",
+                          width: "60px",
+                        }}
+                      >
+                        <img src={windmill} style={{ width: "100%" }} />
+                      </div>
+                    </div>
+                    <div>
+                      <h3>
+                        {currWeather && currTime(currWeather.current.sunrise)}
+                      </h3>
+                      <h3>Sunrise</h3>
+                      <br />
+
+                      <h3>
+                        {currWeather && currTime(currWeather.current.sunset)}
+                      </h3>
+                      <h3>Sunset</h3>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="main-item main-item2">
-                <div>
-                  <h3>{currWeather && currWeather.current.humidity}%</h3>
-                  <h3>Humidity</h3>
-                  <br />
-                  <h3>{currWeather && currWeather.current.wind_speed} mph</h3>
-                  <div
-                    style={{
-                      backgroundColor: "#fff",
-                      borderRadius: ".7rem",
-                      width: "60px",
-                    }}
-                  >
-                    <img src={windmill} style={{ width: "100%" }} />
-                  </div>
-                </div>
-                <div>
-                  <h3>
-                    {currWeather && currTime(currWeather.current.sunrise)}
-                  </h3>
-                  <h3>Sunrise</h3>
-                  <br />
-
-                  <h3>{currWeather && currTime(currWeather.current.sunset)}</h3>
-                  <h3>Sunset</h3>
-                </div>
+              <div className="bottom">
+                <h1>7 Days Forecast</h1>
+                {forecast && (
+                  <CarouselComp className="slide-wrapper" forecast={forecast} />
+                )}
               </div>
             </div>
-          </div>
-          <div className="bottom">
-            <h1>7 Days Forecast</h1>
-            {forecast && (
-              <CarouselComp className="slide-wrapper" forecast={forecast} />
-            )}
-          </div>
+          )}
         </div>
       )}
     </div>
