@@ -105,13 +105,13 @@ header {
     font-size: 1.6rem;
     margin-left: 0.5rem;
   }
-  .search {
+  /* .search {
     left: 40%;
-  }
+  } */
   .search input {
     width: 200px;
     height: 200px;
-  }
+  } 
   .search .input-item {
     display: flex;
     flex-direction: column;

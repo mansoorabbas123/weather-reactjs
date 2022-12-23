@@ -29,30 +29,18 @@ const App = () => {
   let [bgImg, setBgImg] = useState(bgImage);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  // when someone click on search button then this functin can be called
-  const handleSubmit = () => {
-    if (city) {
-      setCityFromWeather(city);
-      setErrorMessage(null);
-      setLoader(true);
-      getWeatherData();
-    } else {
-      setErrorMessage("No Data");
-    }
-  };
-
   // Getting weather data from api
-  const getWeatherData = async () => {
+  const getWeatherData = async (city) => {
     try {
-      console.log(city);
+      // console.log(city);
       // get weather data from openweather api
       const res = await axios(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a19358ea187a8bfc9c5524cc4489a585`
       );
-      console.log(res);
+      // console.log(res);
       setCity("");
       let { coord } = res.data;
-      console.log(coord);
+      // console.log(coord);
       const res2 = await axios(
         `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&units=metric&appid=113a87400b5261ba9851509613687a2e`
       );
@@ -71,6 +59,7 @@ const App = () => {
 
       // set weather data came from api into state
       setLoader(false);
+      setAddress("");
       setCurrWeather(res2.data);
       setForecast(res2.data.daily);
 
@@ -97,18 +86,23 @@ const App = () => {
       setLoader(false);
       setCurrWeather(null);
       setErrorMessage("No Data");
-      console.log(error);
+      // console.log(error);
     }
   };
   // console.log(currWeather);
-  // getting input data from input field when use select any suggestion item
+  // getting input data from input field when user select any suggested item
   const handleSelect = async (value) => {
+    setAddress(value);
     const result = await geocodeByAddress(value);
     const cityName = result[0].address_components[0].short_name;
-    console.log(cityName);
-    // const latLng = await getLatLng(result[0]);
-
-    setCity(cityName);
+    if (cityName) {
+      setCityFromWeather(cityName);
+      setErrorMessage(null);
+      setLoader(true);
+      getWeatherData(cityName);
+    } else {
+      setErrorMessage("No Data");
+    }
   };
 
   // format time
@@ -182,7 +176,7 @@ const App = () => {
     minHeight: "100vh",
   };
   useEffect(() => {
-    setIsLoading(false);
+   setIsLoading(false);
   }, []);
 
   return (
@@ -242,7 +236,6 @@ const App = () => {
                         }
                       </div>
                     </div>
-                    <button onClick={handleSubmit}>Search</button>
                   </>
                 )}
               </PlacesAutocomplete>
