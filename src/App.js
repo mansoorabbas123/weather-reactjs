@@ -29,12 +29,12 @@ const App = () => {
     try {
       // get weather data from openweather api
       const res = await axios(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a19358ea187a8bfc9c5524cc4489a585`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.REACT_APP_WEATHER_API_KEY_1}`
       );
       // console.log(res);
       let { coord } = res.data;
       const res2 = await axios(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&units=metric&appid=113a87400b5261ba9851509613687a2e`
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&units=metric&appid=${process.env.REACT_APP_WEATHER_API_KEY_2}`
       );
 
       // formate date
