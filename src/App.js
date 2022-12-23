@@ -83,8 +83,11 @@ const App = () => {
   // getting input data from input field when user select any suggested item
   const handleSelect = async (value) => {
     setAddress(value);
+    
     const result = await geocodeByAddress(value);
-    const cityName = result[0].address_components[0].short_name;
+    console.log("result",result);
+
+    const cityName = result[0].address_components[0].long_name;
     if (cityName) {
       setCityFromWeather(cityName);
       setErrorMessage(null);
